@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include "graph.h"
-#define MAX_SIZE 250
+#define MAX_SIZE 300
 
 int main (){
 char mat[MAX_SIZE];
@@ -10,7 +10,7 @@ for(int i=0;i<MAX_SIZE;i++)
 
 
 fgets(mat, MAX_SIZE, stdin);
-                                    // A 4 n 0 2 5 3 3 n 2 0 4 1 1 n 1 3 7 0 2 n 3 T 3 2 1 3 S 2 0 B 5 0 4 2 1 D 5
+                                    // A 4 n 0 2 5 3 3 n 2 0 4 1 1 n 1 3 7 0 2 n 3 T 3 2 1 3 B 5 0 4 2 1 B 2 1 3 5 1 T 3 2 1 3 D 2 T 2 3 0
 
 int graphInfoSize = 0;
 for(int i=0;i<MAX_SIZE;i++)
@@ -48,7 +48,13 @@ k+=10;
 
 ///////////////////
 if(mat[k] == 'D') // working..V
-  {deleteNode(mat[k+2]-'0');k++;}
+  {
+    //printNodes();
+    //printf("dleting %d\n", mat[k+2]-'0');
+    deleteNode(mat[k+2]-'0');k++;
+    //printf("deleted\n");
+    //printNodes();
+    }
 /////////////////////////
 if(mat[k] == 'S') //check
 {    //printf("s(%d, %d)\n", mat[k+2]-'0', mat[k+4]-'0');
@@ -58,7 +64,7 @@ if(mat[k] == 'S') //check
 /////////////////////
 if(mat[k] == 'T')
 {
-    
+   // printf("got a T request\n");
     int n = mat[k+2]-'0';
     k+=2;
     char tt[n];
@@ -68,7 +74,9 @@ if(mat[k] == 'T')
     {
       tt[y] = mat[k];
       k+=2;      
-    }       
+    } 
+    tt[n] = '\0'  ;
+    //printf("trying tsp(%s)\n", tt);
     tsp(tt, n);
     k--;
 }

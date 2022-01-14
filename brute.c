@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include "graph.h"
 
 int dest_node_num, path_size;
@@ -18,6 +19,13 @@ int bruteCycles;
    number generator. */
 void shuffle(int *array, size_t n)
 {
+    if(n == 2)
+    {
+     int t = array[1];
+     array[1]  = array[0];
+     array[0] = t;
+     return;
+    }
     if (n > 1) 
     {
         size_t i;
@@ -31,25 +39,26 @@ void shuffle(int *array, size_t n)
     }
 }
 
-void tsp(char *data, size_t size){
+void tsp(char *data, size_t size){   
   int min = 10000, sum=0;
   int arr[size];
   for(int i=0;i<size;i++){
       arr[i] = data[i]-'0';
   }
-
   for(int i=0 ; i<10; i++){
      /////////////////////////////
+     
      for(int j=0; j<size-1; j++){
+       
       int res = brute(get_node_by_id(arr[j]), get_node_by_id(arr[j+1]));
-      if(res > -1) 
-         sum +=  res;   // we are calling s(int a, int b). 
+      
+      if(res > -1 && res<10000) 
+         sum +=  res;   
       else{
       sum = 10000;
       break; 
      }      
      }
-     
     if(sum != -1 && sum<min)
        min = sum;
     
@@ -61,6 +70,7 @@ void tsp(char *data, size_t size){
       printf("TSP shortest path: %d\n", min);
     else 
       printf("TSP shortest path: %d\n", -1);
+    //free(data);
 }
 
 void deColorGraph(){
@@ -80,6 +90,7 @@ void weighGraph(){
 }
 
 int brute(pnode src, pnode dst){
+  //printf("brute running..with node#%d and node#%d\n",src->node_num, dst->node_num);
    int visited = 0, all = numOfNodes;
    deColorGraph();
    weighGraph();
@@ -116,7 +127,7 @@ int brute(pnode src, pnode dst){
    }// while visisted..
     
 
-
+  
   return dst->node_weight; 
 }
 

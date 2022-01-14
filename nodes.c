@@ -28,7 +28,7 @@ int addNode (char *ndstr){  //ndstr is the string without B.
     newNode->node_num = node_num;
     pedge edgPointer;
     newNode->edges = malloc(sizeof(struct edge_));
-    if(newNode == NULL)
+    if(newNode->edges == NULL)
       perror("Memory fault: ");
     edgPointer = newNode->edges;
     pedge prv = edgPointer;
@@ -51,55 +51,87 @@ int addNode (char *ndstr){  //ndstr is the string without B.
 
 void deleteNode(int node_num){
   //if node doesn't exist..return.
+ // printf("deleteNode() triggerred nod_num=%d!\n",node_num);
   if(get_node_by_id(node_num) == NULL)
+  {
+  //  printf("node to delete not found! #%d\n", node_num);
     return ;
-
+  }
   //handle incoming edges. (wipe them)
   pnode delNode = get_node_by_id(node_num);
   pnode nodes_list = nodes;
-  //printf("deleting node #%d\n", delNode->node_num);
-  //printf("delNode=%d nodes=%d\n", delNode->node_num, nodes_list->node_num);
+ // printf("first while loop entery..\n");
   while(nodes_list != NULL){
-
-    //no need to handle edges on the node to be deleted./'
-
-    if(nodes_list->node_num != delNode->node_num)
+   // printf("current nodes_list #%d\n", nodes_list->node_num);
+    //nodes_list = nodes;
+    //no need to handle edges on the node to be deleted, it's edges will simply be all deleted.
+    if(nodes_list->node_num == delNode->node_num)
      {       
-       nodes_list = nodes_list->next;       
+      // printf("bypassed delNode edge handling..!\n");
+       nodes_list = nodes_list->next;  //bypass deleted node, for now.     
        continue;
      }
-    pedge edg = nodes_list->edges;
-    pedge edg_prv = nodes_list->edges;
-    if(nodes_list->edges->endpoint == delNode)  //handle first node
-       nodes_list->edges = nodes_list->edges->next;
-    edg = edg->next;
-    while(edg != NULL){
-      if(edg->endpoint == delNode)
-         edg_prv->next = edg->next;
-      edg = edg->next;
-      edg_prv = edg_prv->next;
+    
+    pedge edg1 = nodes_list->edges; //if no edges on node, continue to next node.
+    if(edg1 == NULL)
+       {
+       //  printf("next node to check\n");
+         nodes_list = nodes_list->next;
+         continue;
+       }
+     
+    if(edg1->endpoint->node_num == delNode->node_num)
+      {// if first edge on node needs to be deleted.
+      //   printf("found delNode edge to be first edge!\n");
+         nodes_list->edges = edg1->next; // delete it.
+         free(edg1);                     // free memory
+         nodes_list = nodes_list->next;  
+         continue;                       //goto next node.
+      }
+    pedge head = edg1;
+    edg1 = edg1->next;
+    //printf("second while loop entry...\n");
+    while(edg1 != NULL && edg1->endpoint->node_num != delNode->node_num)
+    { 
+       //printf("skipping through edges\n");
+       head = edg1;            //forward pointers until edge to be deleted is found. 
+       edg1 = edg1->next;           
+    } // edges while loop..
+    if(edg1 != NULL)
+    {
+     // printf("edg1 nailed..\n");
+      head->next = edg1->next;  //delete edge.
+      free(edg1);
+      
     }
-    nodes_list = nodes_list->next;
+   // printf("nodes_list forwarded, was #%d!!\n", nodes_list->node_num);
+    nodes_list = nodes_list->next;  //goto next node.
+    
   }
-
   //now wipe node
   nodes_list = nodes;
   pnode prvNode = nodes;
   if(nodes_list->node_num == node_num) // if first node is the one to be deleted.
      {
+       //printf("deleting first node!!\n");
        nodes = nodes->next;
-       free((void *)prvNode);
+       free(prvNode);
        return;
      }
-  nodes_list=nodes_list->next;
-  while(nodes_list!=NULL){
-    if(nodes_list->node_num == node_num)
+  nodes_list=nodes->next;
+  prvNode = nodes_list;
+  while(nodes_list!=NULL && nodes_list->node_num!=node_num){ //advance until node to be deleted is found.
       {
-        free((void *) prvNode->next);        
-        prvNode->next = nodes_list->next;       
+       // printf("skipping through nodes..\n");
+       prvNode = nodes_list; 
+       nodes_list=nodes_list->next;   
       }
-    prvNode = prvNode->next;
-    nodes_list = nodes_list->next;
+    if(nodes_list != NULL){
+     // printf("and nailed node\n");
+      prvNode->next = nodes_list->next;
+      free(nodes_list);
+      return;
+    }
   }
   return;
 }

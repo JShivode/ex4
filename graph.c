@@ -97,21 +97,20 @@ void buildGraph(char *data){
   int idx=0;
   
   //printf("numOfNodes=%d\n",numOfNodes);
-  nodes = malloc(sizeof(struct GRAPH_NODE_));
-  if(nodes == NULL)
-      perror("memory erros:\n");
-  nodes->edges = NULL;
-  nodes->node_num = 0;
-  nodes->next = NULL;
-  for(int i=1; i<numOfNodes;i++){
+  nodes = NULL;//malloc(sizeof(struct GRAPH_NODE_));
+  //if(nodes == NULL)
+    //  perror("memory erros:\n");
+  //nodes->edges = NULL;
+  //nodes->node_num = 0;
+  //nodes->next = NULL;
+  for(int i=0; i<numOfNodes;i++){
     pnode newNode = malloc(sizeof(struct GRAPH_NODE_));
     if(newNode == NULL)
       perror("memory erros:\n");
     newNode->edges = NULL;
     newNode->node_num=i;
-    pnode tempNode = nodes;
+    newNode->next = nodes;
     nodes = newNode;
-    nodes->next = tempNode;
   }
   /*printf("\ninputArray= ");
   for(int i=0;i<inputLength;i++)
