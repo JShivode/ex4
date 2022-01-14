@@ -9,6 +9,7 @@
 
 void interpret(char *data){
  // initial handling.
+ //printf("graph string=%s", data);
  int counter = 0;
  numOfNodes = 0 ;
  if(*data == 'A')
@@ -82,8 +83,6 @@ void interpret(char *data){
  d++; 
 }
 d = data;
-
-printf("\n");
 }
 
 
@@ -153,6 +152,17 @@ void buildGraph(char *data){
   }
 }
 
+void freeNodes(){
+  pnode hd = nodes;
+  nodes = nodes->next;
+  while(nodes != NULL)
+  {
+    free(hd);
+    hd = nodes;
+    nodes = nodes->next;
+  }
+  free(hd);
+}
 
 void freeEdges(){
    pnode cnodes = nodes;

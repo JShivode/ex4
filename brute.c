@@ -39,19 +39,25 @@ void shuffle(int *array, size_t n)
     }
 }
 
+void printArray(int *arr, size_t size){
+  for(int i=0; i<size; i++)
+      printf("[%d] ", arr[i]);
+  printf("\n");
+}
+
 void tsp(char *data, size_t size){   
   int min = 10000, sum=0;
   int arr[size];
   for(int i=0;i<size;i++){
       arr[i] = data[i]-'0';
   }
-  for(int i=0 ; i<10; i++){
+  for(int i=0 ; i<35; i++){
      /////////////////////////////
-     
+     //printArray(arr, size);
      for(int j=0; j<size-1; j++){
        
       int res = brute(get_node_by_id(arr[j]), get_node_by_id(arr[j+1]));
-      
+      //printf("result = %d\n", res);
       if(res > -1 && res<10000) 
          sum +=  res;   
       else{
@@ -99,8 +105,7 @@ int brute(pnode src, pnode dst){
    while(visited < all){
    pedge edItr = src->edges;
    int min = 10000;
-   if(dst->color == 1) break;
-
+   //if(dst->color == 1) break;
    while (edItr != NULL) // 
    {
      if(edItr->endpoint->color == 0){
@@ -113,7 +118,6 @@ int brute(pnode src, pnode dst){
    }
    edItr = src->edges;
    src->color = 1;
-   //printf("colored node# %d it's weight is %d\n", src->node_num, src->node_weight);
    visited++;
    while (edItr != NULL)
    {
@@ -124,10 +128,7 @@ int brute(pnode src, pnode dst){
         }
       edItr = edItr -> next;
    }
-   }// while visisted..
-    
-
-  
+   }// while visited..      
   return dst->node_weight; 
 }
 

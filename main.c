@@ -10,9 +10,13 @@ for(int i=0;i<MAX_SIZE;i++)
 
 
 fgets(mat, MAX_SIZE, stdin);
-                                    // A 4 n 0 2 5 3 3 n 2 0 4 1 1 n 1 3 7 0 2 n 3 T 3 2 1 3 B 5 0 4 2 1 B 2 1 3 5 1 T 3 2 1 3 D 2 T 2 3 0
-
-int graphInfoSize = 0;
+                                    // A 4 n 0 2 5 3 3 n 2 0 4 1 1 n 1 3 7 0 2 n 3 T 3 2 1 3 B 5 0 4 2 1 B 2 1 3 5 1 T 3 2 1 3 A 4 n 0 2 5 3 3 n 2 0 4 1 1 n 1 3 7 0 2 n 3 T 2 2 1
+int graphInfoSize = MAX_SIZE;
+char dt[graphInfoSize];
+int k;
+char tmp[6];
+first:
+graphInfoSize = 0;
 for(int i=0;i<MAX_SIZE;i++)
    {       
        if(mat[i] == '\0' || mat[i] == 'B' || mat[i] == 'D' || mat[i] == 'S' || mat[i] == 'T') break;
@@ -20,16 +24,19 @@ for(int i=0;i<MAX_SIZE;i++)
    }
 if(graphInfoSize > 0) graphInfoSize+=1;   // unless array is empty add 2 to graphInfoSize. example: 2, 3, n, '\0' graphInfoSize = 4.
 
-char dt[graphInfoSize];
+
 for(int i=0;i<graphInfoSize;i++)
    dt[i] = mat[i];
 dt[graphInfoSize-1] = '\0'; //termination
 
 buildGraph(dt);
+//printNodes();
+//printf("press any key..\n");
+//getchar();
 /////////////////////////////////////////
-int k = graphInfoSize-1;
+k = graphInfoSize-1;
 
-char tmp[6]; 
+ 
 while(mat[k]!='\0'){
 
 int kx=0;
@@ -80,7 +87,23 @@ if(mat[k] == 'T')
     tsp(tt, n);
     k--;
 }
-
+   //////////////////////
+   if(mat[k] == 'A')
+   {
+     char matt[MAX_SIZE] ;
+     int j=0;
+     while(mat[k] != '\0'){
+       matt[j] = mat[k];
+       j++;
+       k++;
+     }
+     matt[j] ='\0';
+     //printf("going first:%s\n",matt);
+     freeEdges();
+     freeNodes();
+     strcpy(mat, matt);
+     goto first;
+   }
 k++;
 }
 /////////////////
